@@ -26,6 +26,7 @@ import pro.lovexj.location.bean.Location;
 import pro.lovexj.location.listener.LocationListener;
 import pro.lovexj.location.thread.LocationThread;
 import pro.lovexj.location.util.Constant;
+import pro.lovexj.location.util.OsUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String processName = OsUtils.getProcessName(this, android.os.Process.myPid());
+        System.out.println("processName:"+processName);
+        if(null == processName || !processName.endsWith("pro.lovexj.location")) {
+            System.out.println("跳出onCreate方法");
+            return;
+        }
+        System.out.println("进入onCreate方法");
         context=getApplicationContext();
         SDKInitializer.initialize(context);
         setContentView(R.layout.activity_main);
@@ -76,43 +84,48 @@ public class MainActivity extends AppCompatActivity {
         notification.defaults = Notification.DEFAULT_SOUND; //设置为默认的声音
         mLocationClient.enableLocInForeground(1001, notification);// 调起前台定位
 
-        //界面显示位置
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mMapView = (MapView) findViewById(R.id.bmapView);
-                mBaiduMap = mMapView.getMap();
-                List<LatLng> points = new ArrayList<>();
-                while (true){
-                    try{
-                        Location location = Constant.blockLonLatList.take();
-                        //清除地图上的点
-                        mBaiduMap.clear();
-                        //绘制点
-                        LatLng point = new LatLng(location.getLat(),location.getLon());
-                        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_mark1);
-                        OverlayOptions opt = new MarkerOptions().position(point).icon(bitmap);
-                        mBaiduMap.addOverlay(opt);
+        if(!Constant.isStartDrawMapThread){
+            //界面显示位置
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mMapView = (MapView) findViewById(R.id.bmapView);
+                    mBaiduMap = mMapView.getMap();
+                    List<LatLng> points = new ArrayList<>();
+                    while (true){
+                        try{
+                            Constant.isStartDrawMapThread = true;
+                            Location location = Constant.blockLonLatList.take();
+                            //清除地图上的点
+                            mBaiduMap.clear();
+                            //绘制点
+                            LatLng point = new LatLng(location.getLat(),location.getLon());
+                            BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_mark1);
+                            OverlayOptions opt = new MarkerOptions().position(point).icon(bitmap);
+                            mBaiduMap.addOverlay(opt);
 
-                        //绘制线
-                        //添加到线中
-                        points.add(point);
-                        if(points.size() > 1000){
-                            points.remove(0);
+                            //绘制线
+                            //添加到线中
+                            points.add(point);
+                            if(points.size() > 1000){
+                                points.remove(0);
+                            }
+                            if(points.size() >= 2){
+                                OverlayOptions ooPolyline = new PolylineOptions().width(10).color(0xAAFF0000).points(points);
+                                mBaiduMap.addOverlay(ooPolyline);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
-                        if(points.size() >= 2){
-                            OverlayOptions ooPolyline = new PolylineOptions().width(10).color(0xAAFF0000).points(points);
-                            mBaiduMap.addOverlay(ooPolyline);
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
                     }
                 }
-            }
-        }).start();
+            }).start();
+        }
 
-        //发送服务器的线程
-        new Thread(new LocationThread()).start();
+        if(!Constant.isStartSendToServerThread){
+            //发送服务器的线程
+            new Thread(new LocationThread()).start();
+        }
     }
 
     public static Context getContext() {

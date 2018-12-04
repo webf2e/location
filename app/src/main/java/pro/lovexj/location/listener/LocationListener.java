@@ -59,8 +59,12 @@ public class LocationListener extends BDAbstractLocationListener {
         l.setStreet(street);
         l.setTime(time);
         l.setTimestramp(timestramp);
+        if(Constant.isStartDrawMapThread){
+            Constant.blockLonLatList.add(l);
+        }
 
-        Constant.blockLonLatList.add(l);
-        Constant.concurlonLatList.offer(l);
+        if(Constant.isStartSendToServerThread){
+            Constant.concurlonLatList.offer(l);
+        }
     }
 }

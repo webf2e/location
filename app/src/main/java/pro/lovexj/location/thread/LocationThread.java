@@ -25,6 +25,7 @@ public class LocationThread implements Runnable{
     @Override
     public void run() {
         while (true){
+            Constant.isStartSendToServerThread = true;
             try {
                 if(Constant.concurlonLatList.size() > 10){
                     List<Location> locList = new ArrayList<>();
