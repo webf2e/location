@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,15 +17,15 @@
             </intent-filter>
         </activity>
         <!--家开发AK-->
-        <!--<meta-data-->
-            <!--android:name="com.baidu.lbsapi.API_KEY"-->
-            <!--android:value="klyyc78i3WVo2RmGAFh6NzVfYVDbj5Md" >-->
-        <!--</meta-data>-->
-        <!--公司开发AK-->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="B2BlcoRAzGeRSDqwp2a3S0afn49MUXv7" >
+            android:value="klyyc78i3WVo2RmGAFh6NzVfYVDbj5Md" >
         </meta-data>
+        <!--公司开发AK-->
+        <!--<meta-data-->
+            <!--android:name="com.baidu.lbsapi.API_KEY"-->
+            <!--android:value="B2BlcoRAzGeRSDqwp2a3S0afn49MUXv7" >-->
+        <!--</meta-data>-->
 
         <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"> </service>
     </application>

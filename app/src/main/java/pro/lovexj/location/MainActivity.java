@@ -4,9 +4,13 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
@@ -35,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private LocationListener myListener = new LocationListener();
     private MapView mMapView;
     private BaiduMap mBaiduMap;
+    private TextView info;
+    private String content;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +57,13 @@ public class MainActivity extends AppCompatActivity {
         SDKInitializer.initialize(context);
         setContentView(R.layout.activity_main);
         mMapView = (MapView) findViewById(R.id.bmapView);
+        mMapView.showScaleControl(true);
+        mMapView.showZoomControls(true);
 
         LocationClientOption option = new LocationClientOption();
         option.setCoorType("bd09ll");
         option.setScanSpan(2000);
+        option.setPriority(LocationClientOption.GpsFirst);
         //可选，设置发起定位请求的间隔，int类型，单位ms
         //如果设置为0，则代表单次定位，即仅定位一次，默认为0
         //如果设置非0，需设置1000ms以上才有效
@@ -66,9 +76,6 @@ public class MainActivity extends AppCompatActivity {
         mLocationClient = new LocationClient(getApplicationContext());
         mLocationClient.setLocOption(option);
         //声明LocationClient类
-        mLocationClient.registerLocationListener(myListener);
-        mLocationClient.start();
-
         //通知
         Notification.Builder builder = new Notification.Builder (MainActivity.this.getApplicationContext());
         //获取一个Notification构造器
@@ -83,14 +90,25 @@ public class MainActivity extends AppCompatActivity {
         notification = builder.build();
         notification.defaults = Notification.DEFAULT_SOUND; //设置为默认的声音
         mLocationClient.enableLocInForeground(1001, notification);// 调起前台定位
+        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
+        mLocationClient.registerLocationListener(myListener);
+        mLocationClient.start();
+        handler = new Handler();
 
         if(!Constant.isStartDrawMapThread){
             //界面显示位置
+            final Runnable changeUI = new Runnable() {
+                @Override
+                public void run() {
+                    info.setText(content);
+                }
+            };
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    mMapView = (MapView) findViewById(R.id.bmapView);
                     mBaiduMap = mMapView.getMap();
+                    info=(TextView)findViewById(R.id.info);
+                    info.setBackgroundColor(Color.parseColor("#ffffff"));
                     List<LatLng> points = new ArrayList<>();
                     while (true){
                         try{
@@ -103,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
                             BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_mark1);
                             OverlayOptions opt = new MarkerOptions().position(point).icon(bitmap);
                             mBaiduMap.addOverlay(opt);
-
+                            content = JSONObject.toJSONString(location);
+                            handler.post(changeUI);
                             //绘制线
                             //添加到线中
                             points.add(point);
@@ -135,19 +154,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        System.out.println("onDestroy");
         //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
         mMapView.onDestroy();
     }
     @Override
     protected void onResume() {
         super.onResume();
+        System.out.println("onResume");
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
         mMapView.onResume();
     }
     @Override
     protected void onPause() {
         super.onPause();
-        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
+        System.out.println("onPause");
         mMapView.onPause();
     }
 }
