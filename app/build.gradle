@@ -34,4 +34,5 @@ dependencies {
     implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/component_common_sdk_1.0.0.jar')
     implementation files('libs/IndoorscapeAlbumPlugin.jar')
+    implementation 'com.alibaba:fastjson:1.1.54.android'
 }

@@ -1,6 +1,9 @@
 package pro.lovexj.location;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -13,21 +16,22 @@ import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.map.Polyline;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import pro.lovexj.location.listener.MyLocationListener;
+import pro.lovexj.location.bean.Location;
+import pro.lovexj.location.listener.LocationListener;
+import pro.lovexj.location.thread.LocationThread;
 import pro.lovexj.location.util.Constant;
 
 public class MainActivity extends AppCompatActivity {
 
     private  static Context context;
     public LocationClient mLocationClient = null;
-    private MyLocationListener myListener = new MyLocationListener();
+    private LocationListener myListener = new LocationListener();
     private MapView mMapView;
     private BaiduMap mBaiduMap;
 
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         LocationClientOption option = new LocationClientOption();
         option.setCoorType("bd09ll");
-        option.setScanSpan(10000);
+        option.setScanSpan(2000);
         //可选，设置发起定位请求的间隔，int类型，单位ms
         //如果设置为0，则代表单次定位，即仅定位一次，默认为0
         //如果设置非0，需设置1000ms以上才有效
@@ -57,6 +61,22 @@ public class MainActivity extends AppCompatActivity {
         mLocationClient.registerLocationListener(myListener);
         mLocationClient.start();
 
+        //通知
+        Notification.Builder builder = new Notification.Builder (MainActivity.this.getApplicationContext());
+        //获取一个Notification构造器
+        Intent nfIntent = new Intent(MainActivity.this.getApplicationContext(), MainActivity.class);
+        builder.setContentIntent(PendingIntent.getActivity(MainActivity.this, 0, nfIntent, 0)) // 设置PendingIntent
+                .setContentTitle("正在进行后台定位") // 设置下拉列表里的标题
+                .setSmallIcon(R.mipmap.ic_launcher) // 设置状态栏内的小图标
+                .setContentText("后台定位通知") // 设置上下文内容
+                .setAutoCancel(true)
+                .setWhen(System.currentTimeMillis()); // 设置该通知发生的时间
+        Notification notification = null;
+        notification = builder.build();
+        notification.defaults = Notification.DEFAULT_SOUND; //设置为默认的声音
+        mLocationClient.enableLocInForeground(1001, notification);// 调起前台定位
+
+        //界面显示位置
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -65,35 +85,34 @@ public class MainActivity extends AppCompatActivity {
                 List<LatLng> points = new ArrayList<>();
                 while (true){
                     try{
-                        String[] lonlat = Constant.lonLat.take().split(",");
+                        Location location = Constant.blockLonLatList.take();
+                        //清除地图上的点
                         mBaiduMap.clear();
-                        System.out.println(lonlat[0]+":"+lonlat[1]);
-                        LatLng point = new LatLng(Double.parseDouble(lonlat[1]),
-                                Double.parseDouble(lonlat[0]));
+                        //绘制点
+                        LatLng point = new LatLng(location.getLat(),location.getLon());
+                        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_mark1);
+                        OverlayOptions opt = new MarkerOptions().position(point).icon(bitmap);
+                        mBaiduMap.addOverlay(opt);
+
+                        //绘制线
                         //添加到线中
                         points.add(point);
                         if(points.size() > 1000){
                             points.remove(0);
                         }
-
-
-                        BitmapDescriptor bitmap = BitmapDescriptorFactory
-                                .fromResource(R.drawable.icon_mark1);
-                        OverlayOptions opt = new MarkerOptions()
-                                .position(point)
-                                .icon(bitmap);
-                        mBaiduMap.addOverlay(opt);
-
-                        //绘制线
-                        OverlayOptions ooPolyline = new PolylineOptions().width(10)
-                                .color(0xAAFF0000).points(points);
-                        mBaiduMap.addOverlay(ooPolyline);
+                        if(points.size() >= 2){
+                            OverlayOptions ooPolyline = new PolylineOptions().width(10).color(0xAAFF0000).points(points);
+                            mBaiduMap.addOverlay(ooPolyline);
+                        }
                     }catch (Exception e){
                         e.printStackTrace();
                     }
                 }
             }
         }).start();
+
+        //发送服务器的线程
+        new Thread(new LocationThread()).start();
     }
 
     public static Context getContext() {
