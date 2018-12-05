@@ -9,15 +9,17 @@ public class Location {
     private long timestramp;
     private double lon;
     private double lat;
-    float radius;
-    String addr;
-    String country;
-    String province;
-    String city;
-    String district;
-    String street;
-    int errorCode;
-    String locationDescribe;
+    private float radius;
+    private String addr;
+    private String country;
+    private String province;
+    private String city;
+    private String district;
+    private String street;
+    private int errorCode;
+    private String locationDescribe;
+    private double height;
+
 
     public String getTime() {
         return time;
@@ -121,5 +123,13 @@ public class Location {
 
     public void setLocationDescribe(String locationDescribe) {
         this.locationDescribe = locationDescribe;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
     }
 }

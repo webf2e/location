@@ -44,6 +44,7 @@ public class LocationListener extends BDAbstractLocationListener {
         String district = location.getDistrict();    //获取区县
         String street = location.getStreet();    //获取街道信息
         int errorCode = location.getLocType();
+        double height = location.getAltitude();
         String locationDescribe = location.getLocationDescribe();    //获取位置描述信息
         Location l = new Location();
         l.setAddr(addr);
@@ -59,6 +60,7 @@ public class LocationListener extends BDAbstractLocationListener {
         l.setStreet(street);
         l.setTime(time);
         l.setTimestramp(timestramp);
+        l.setHeight(height);
         if(Constant.isStartDrawMapThread){
             Constant.blockLonLatList.add(l);
         }

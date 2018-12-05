@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         LocationClientOption option = new LocationClientOption();
         option.setCoorType("bd09ll");
         option.setScanSpan(2000);
+        option.setIsNeedAddress(true);
+        option.setIsNeedAltitude(true);
+        option.setIsNeedLocationDescribe(true);
         option.setPriority(LocationClientOption.GpsFirst);
         //可选，设置发起定位请求的间隔，int类型，单位ms
         //如果设置为0，则代表单次定位，即仅定位一次，默认为0
