@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         LocationClientOption option = new LocationClientOption();
         option.setCoorType("bd09ll");
-        option.setScanSpan(2000);
+        option.setScanSpan(5000);
         option.setIsNeedAddress(true);
         option.setIsNeedAltitude(true);
         option.setIsNeedLocationDescribe(true);
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                     while (true){
                         try{
                             Constant.isStartDrawMapThread = true;
-                            Location location = Constant.blockLonLatList.take();
+                            Location location = Constant.mapLonLatList.take();
                             //清除地图上的点
                             mBaiduMap.clear();
                             //绘制点

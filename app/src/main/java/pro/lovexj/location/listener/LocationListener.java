@@ -1,25 +1,10 @@
 package pro.lovexj.location.listener;
 
-import android.widget.Toast;
-
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.baidu.location.LocationClient;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.model.LatLng;
-
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 
-import pro.lovexj.location.MainActivity;
-import pro.lovexj.location.R;
 import pro.lovexj.location.bean.Location;
 import pro.lovexj.location.util.Constant;
 
@@ -62,11 +47,11 @@ public class LocationListener extends BDAbstractLocationListener {
         l.setTimestramp(timestramp);
         l.setHeight(height);
         if(Constant.isStartDrawMapThread){
-            Constant.blockLonLatList.add(l);
+            Constant.mapLonLatList.add(l);
         }
 
         if(Constant.isStartSendToServerThread){
-            Constant.concurlonLatList.offer(l);
+            Constant.serverLonLatList.add(l);
         }
     }
 }
