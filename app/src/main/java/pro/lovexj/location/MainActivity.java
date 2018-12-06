@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         LocationClientOption option = new LocationClientOption();
         option.setCoorType("bd09ll");
-        option.setScanSpan(5000);
+        option.setScanSpan(1000);
         option.setIsNeedAddress(true);
         option.setIsNeedAltitude(true);
         option.setIsNeedLocationDescribe(true);

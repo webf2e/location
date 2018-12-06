@@ -19,10 +19,15 @@ public class LocationThread implements Runnable{
 
     @Override
     public void run() {
+        long lastUploadTime = 0;
         while (true){
             Constant.isStartSendToServerThread = true;
             try {
                 Location location = Constant.serverLonLatList.take();
+                if(location.getTimestramp() - lastUploadTime < 5000){
+                    continue;
+                }
+                lastUploadTime = location.getTimestramp();
                 Map<String, String> params = new HashMap<>();
                 params.put("locData", com.alibaba.fastjson.JSONObject.toJSONString(location));
                 String result = HttpUtils.post(url,params,"utf-8");
