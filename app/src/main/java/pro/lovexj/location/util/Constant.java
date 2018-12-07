@@ -12,6 +12,8 @@ import pro.lovexj.location.bean.Location;
 public class Constant {
     public static LinkedBlockingQueue<Location> mapLonLatList = new LinkedBlockingQueue<>();
     public static LinkedBlockingQueue<Location> serverLonLatList = new LinkedBlockingQueue<>();
+    public static LinkedBlockingQueue<String> serverDataList = new LinkedBlockingQueue<>();
     public static boolean isStartSendToServerThread = false;
+    public static boolean isRestartLocationThread = false;
     public static boolean isStartDrawMapThread = false;
 }

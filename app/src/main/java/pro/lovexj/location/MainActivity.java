@@ -1,18 +1,12 @@
 package pro.lovexj.location;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -27,21 +21,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pro.lovexj.location.bean.Location;
-import pro.lovexj.location.listener.LocationListener;
-import pro.lovexj.location.thread.LocationThread;
+import pro.lovexj.location.service.LocationService;
+import pro.lovexj.location.thread.LocationServerThread;
+import pro.lovexj.location.thread.RestartLocationThread;
 import pro.lovexj.location.util.Constant;
 import pro.lovexj.location.util.OsUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     private  static Context context;
-    public LocationClient mLocationClient = null;
-    private LocationListener myListener = new LocationListener();
     private MapView mMapView;
     private BaiduMap mBaiduMap;
-    private TextView info;
-    private String content;
+    private TextView codeText;
+    private TextView timeText;
+    private TextView lonlatText;
+    private TextView addrText;
+    private TextView serverDataText;
     private Handler handler;
+
+    private String code;
+    private String time;
+    private String lonlat;
+    private String addr;
+    private String serverData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,42 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mMapView.showScaleControl(true);
         mMapView.showZoomControls(true);
 
-        LocationClientOption option = new LocationClientOption();
-        option.setCoorType("bd09ll");
-        option.setScanSpan(1000);
-        option.setIsNeedAddress(true);
-        option.setIsNeedAltitude(true);
-        option.setIsNeedLocationDescribe(true);
-        option.setPriority(LocationClientOption.GpsFirst);
-        //可选，设置发起定位请求的间隔，int类型，单位ms
-        //如果设置为0，则代表单次定位，即仅定位一次，默认为0
-        //如果设置非0，需设置1000ms以上才有效
-
-        option.setOpenGps(true);
-        //可选，设置是否使用gps，默认false
-        //使用高精度和仅用设备两种定位模式的，参数必须设置为true
-
-        option.setLocationNotify(true);
-        mLocationClient = new LocationClient(getApplicationContext());
-        mLocationClient.setLocOption(option);
-        //声明LocationClient类
-        //通知
-        Notification.Builder builder = new Notification.Builder (MainActivity.this.getApplicationContext());
-        //获取一个Notification构造器
-        Intent nfIntent = new Intent(MainActivity.this.getApplicationContext(), MainActivity.class);
-        builder.setContentIntent(PendingIntent.getActivity(MainActivity.this, 0, nfIntent, 0)) // 设置PendingIntent
-                .setContentTitle("正在进行后台定位") // 设置下拉列表里的标题
-                .setSmallIcon(R.mipmap.ic_launcher) // 设置状态栏内的小图标
-                .setContentText("后台定位通知") // 设置上下文内容
-                .setAutoCancel(true)
-                .setWhen(System.currentTimeMillis()); // 设置该通知发生的时间
-        Notification notification = null;
-        notification = builder.build();
-        notification.defaults = Notification.DEFAULT_SOUND; //设置为默认的声音
-        mLocationClient.enableLocInForeground(1001, notification);// 调起前台定位
-        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
-        mLocationClient.registerLocationListener(myListener);
-        mLocationClient.start();
+        LocationService.start();
         handler = new Handler();
 
         if(!Constant.isStartDrawMapThread){
@@ -103,15 +70,27 @@ public class MainActivity extends AppCompatActivity {
             final Runnable changeUI = new Runnable() {
                 @Override
                 public void run() {
-                    info.setText(content);
+                    codeText.setText(code);
+                    timeText.setText(time);
+                    lonlatText.setText(lonlat);
+                    addrText.setText(addr);
+                    serverDataText.setText(serverData);
                 }
             };
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     mBaiduMap = mMapView.getMap();
-                    info=(TextView)findViewById(R.id.info);
-                    info.setBackgroundColor(Color.parseColor("#ffffff"));
+                    codeText = (TextView)findViewById(R.id.code);
+                    timeText = (TextView)findViewById(R.id.time);
+                    lonlatText = (TextView)findViewById(R.id.lonlat);
+                    addrText = (TextView)findViewById(R.id.addr);
+
+                    codeText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    timeText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    addrText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    lonlatText.setBackgroundColor(Color.parseColor("#ffffff"));
+
                     List<LatLng> points = new ArrayList<>();
                     while (true){
                         try{
@@ -124,12 +103,15 @@ public class MainActivity extends AppCompatActivity {
                             BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_mark1);
                             OverlayOptions opt = new MarkerOptions().position(point).icon(bitmap);
                             mBaiduMap.addOverlay(opt);
-                            content = JSONObject.toJSONString(location);
+                            code = "定位状态码：" + location.getErrorCode();
+                            time = "定位时间：" + location.getTime()+"；时间戳：" + location.getTimestramp();
+                            lonlat = "经度：" + location.getLon()+"；纬度：" + location.getLat() + "；半径：" + location.getRadius();
+                            addr = "地址：" + location.getAddr() + "（" + location.getLocationDescribe() + "）";
                             handler.post(changeUI);
                             //绘制线
                             //添加到线中
                             points.add(point);
-                            if(points.size() > 1000){
+                            if(points.size() > 5000){
                                 points.remove(0);
                             }
                             if(points.size() >= 2){
@@ -142,11 +124,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }).start();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                serverDataText = (TextView)findViewById(R.id.serverData);
+                serverDataText.setBackgroundColor(Color.parseColor("#ffffff"));
+                while (true){
+                    try{
+                        serverData = Constant.serverDataList.take();
+                        handler.post(changeUI);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                }
+            }).start();
         }
 
         if(!Constant.isStartSendToServerThread){
             //发送服务器的线程
-            new Thread(new LocationThread()).start();
+            new Thread(new LocationServerThread()).start();
+        }
+
+        if(!Constant.isRestartLocationThread){
+            //发送服务器的线程
+            new Thread(new RestartLocationThread()).start();
         }
     }
 

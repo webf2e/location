@@ -1,5 +1,6 @@
 package pro.lovexj.location.thread;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,7 @@ import pro.lovexj.location.util.HttpUtils;
  * Created by liuwenbin on 18-12-4.
  */
 
-public class LocationThread implements Runnable{
+public class LocationServerThread implements Runnable{
 
     private String url = "http://lovexj.pro/uploatLocationData";
 
@@ -28,6 +29,7 @@ public class LocationThread implements Runnable{
 
         while (true){
             Constant.isStartSendToServerThread = true;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 Location location = Constant.serverLonLatList.take();
                 //判断发送的时间间隔
@@ -45,10 +47,15 @@ public class LocationThread implements Runnable{
                     continue;
                 }
                 lastUploadTime = location.getTimestramp();
+                if(Math.abs(location.getLon() - 4.9E-324) < 0.0001 ||
+                        Math.abs(location.getLat() - 4.9E-324) < 0.0001){
+                    System.out.println("不合法经纬度坐标");
+                    continue;
+                }
                 Map<String, String> params = new HashMap<>();
                 params.put("locData", com.alibaba.fastjson.JSONObject.toJSONString(location));
                 String result = HttpUtils.post(url,params,"utf-8");
-                System.out.println(result);
+                Constant.serverDataList.add(result+" "+dateFormat.format(System.currentTimeMillis()));
             }catch (Exception e){
                 e.printStackTrace();
             }finally {
