@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import com.igexin.sdk.PushManager;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pro.lovexj.location.bean.Location;
+import pro.lovexj.location.service.IntentService;
+import pro.lovexj.location.service.PushService;
 import pro.lovexj.location.service.LocationService;
 import pro.lovexj.location.thread.LocationServerThread;
 import pro.lovexj.location.thread.RestartLocationThread;
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         context=getApplicationContext();
         SDKInitializer.initialize(context);
         setContentView(R.layout.activity_main);
+        PushManager.getInstance().initialize(this.getApplicationContext(), PushService.class);
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), IntentService.class);
         mMapView = (MapView) findViewById(R.id.bmapView);
         mMapView.showScaleControl(true);
         mMapView.showZoomControls(true);
@@ -167,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        PushManager.getInstance().initialize(this.getApplicationContext(), PushService.class);
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), IntentService.class);
         System.out.println("onResume");
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
         mMapView.onResume();

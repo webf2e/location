@@ -9,6 +9,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+            GETUI_APP_ID : "5J6x0OXyjQ76886EHpixH6",
+            GETUI_APP_KEY : "j1zfq7NGar5UTyZOc02PB5",
+            GETUI_APP_SECRET : "nKvl1ZYosC6lRM0JNNCuT4"
+        ]
     }
     buildTypes {
         release {
@@ -35,4 +41,5 @@ dependencies {
     implementation files('libs/component_common_sdk_1.0.0.jar')
     implementation files('libs/IndoorscapeAlbumPlugin.jar')
     implementation 'com.alibaba:fastjson:1.1.54.android'
+    implementation files('libs/GetuiSDK2.12.5.0.jar')
 }
