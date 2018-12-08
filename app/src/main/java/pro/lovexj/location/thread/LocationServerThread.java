@@ -29,7 +29,6 @@ public class LocationServerThread implements Runnable{
 
         while (true){
             Constant.isStartSendToServerThread = true;
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 Location location = Constant.serverLonLatList.take();
                 //判断发送的时间间隔
@@ -55,7 +54,7 @@ public class LocationServerThread implements Runnable{
                 Map<String, String> params = new HashMap<>();
                 params.put("locData", com.alibaba.fastjson.JSONObject.toJSONString(location));
                 String result = HttpUtils.post(url,params,"utf-8");
-                Constant.serverDataList.add(result+" "+dateFormat.format(System.currentTimeMillis()));
+                Constant.serverDataList.add(result);
             }catch (Exception e){
                 e.printStackTrace();
             }finally {
