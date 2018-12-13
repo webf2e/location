@@ -70,6 +70,15 @@ public class LocationService {
         }
     }
 
+    public static void restart(){
+        if(LocationService.isStarted()){
+            System.out.println("先关闭定位");
+            LocationService.stop();
+        }
+        System.out.println("开启定位");
+        LocationService.start();
+    }
+
     public static boolean isStarted(){
         return locationClient.isStarted();
     }
