@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView lonlatText;
     private TextView addrText;
     private TextView serverDataText;
+    private TextView cidText;
     private Handler handler;
 
     private String code;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 lonlatText.setText(lonlat);
                 addrText.setText(addr);
                 serverDataText.setText(serverData);
+                cidText.setText("客户端ID："+Constant.cid);
                 }
             };
             new Thread(new Runnable() {
@@ -92,11 +94,13 @@ public class MainActivity extends AppCompatActivity {
                 timeText = (TextView)findViewById(R.id.time);
                 lonlatText = (TextView)findViewById(R.id.lonlat);
                 addrText = (TextView)findViewById(R.id.addr);
+                cidText = (TextView)findViewById(R.id.cid);
 
                 codeText.setBackgroundColor(Color.parseColor("#ffffff"));
                 timeText.setBackgroundColor(Color.parseColor("#ffffff"));
                 addrText.setBackgroundColor(Color.parseColor("#ffffff"));
                 lonlatText.setBackgroundColor(Color.parseColor("#ffffff"));
+                cidText.setBackgroundColor(Color.parseColor("#ffffff"));
 
                 List<LatLng> points = new ArrayList<>();
                 int radiusOKCount = 0;
