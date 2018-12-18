@@ -20,6 +20,7 @@ import java.util.Map;
 import pro.lovexj.location.MainActivity;
 import pro.lovexj.location.util.HttpUtils;
 import pro.lovexj.location.util.Constant;
+import pro.lovexj.location.util.RestartAPP;
 
 /**
  * 继承 GTIntentService 接收来自个推的消息, 所有消息在线程中回调, 如果注册了该服务, 则务必要在 AndroidManifest中声明, 否则无法接受消息<br>
@@ -89,6 +90,9 @@ public class IntentService extends GTIntentService {
     @Override
     public void onNotificationMessageArrived(Context context, GTNotificationMessage msg) {
         System.out.println("onNotificationMessageArrived");
+        if("末次位置未更新".equals(msg.getTitle())){
+            RestartAPP.restartAPP(MainActivity.getContext());
+        }
     }
 
     @Override

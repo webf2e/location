@@ -3,11 +3,9 @@ package pro.lovexj.location;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.igexin.sdk.PushManager;
 
@@ -21,6 +19,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.model.LatLng;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +30,7 @@ import pro.lovexj.location.service.LocationService;
 import pro.lovexj.location.thread.LocationServerThread;
 import pro.lovexj.location.util.Constant;
 import pro.lovexj.location.util.OsUtils;
+import pro.lovexj.location.util.RestartAPP;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView addrText;
     private TextView serverDataText;
     private TextView cidText;
+    private TextView appStartTimeText;
     private Handler handler;
 
     private String code;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Constant.appStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis());
         String processName = OsUtils.getProcessName(this, android.os.Process.myPid());
         System.out.println("processName:"+processName);
         if(null == processName || !processName.endsWith("pro.lovexj.location")) {
@@ -78,12 +80,13 @@ public class MainActivity extends AppCompatActivity {
             final Runnable changeUI = new Runnable() {
                 @Override
                 public void run() {
-                codeText.setText(code);
-                timeText.setText(time);
-                lonlatText.setText(lonlat);
-                addrText.setText(addr);
-                serverDataText.setText(serverData);
-                cidText.setText("客户端ID："+Constant.cid);
+                    codeText.setText(code);
+                    timeText.setText(time);
+                    lonlatText.setText(lonlat);
+                    addrText.setText(addr);
+                    serverDataText.setText(serverData);
+                    cidText.setText("客户端ID："+Constant.cid);
+                    appStartTimeText.setText("APP启动时间："+Constant.appStartTime);
                 }
             };
             new Thread(new Runnable() {
@@ -95,12 +98,14 @@ public class MainActivity extends AppCompatActivity {
                 lonlatText = (TextView)findViewById(R.id.lonlat);
                 addrText = (TextView)findViewById(R.id.addr);
                 cidText = (TextView)findViewById(R.id.cid);
+                appStartTimeText = (TextView)findViewById(R.id.appStartTime);
 
                 codeText.setBackgroundColor(Color.parseColor("#ffffff"));
                 timeText.setBackgroundColor(Color.parseColor("#ffffff"));
                 addrText.setBackgroundColor(Color.parseColor("#ffffff"));
                 lonlatText.setBackgroundColor(Color.parseColor("#ffffff"));
                 cidText.setBackgroundColor(Color.parseColor("#ffffff"));
+                appStartTimeText.setBackgroundColor(Color.parseColor("#ffffff"));
 
                 List<LatLng> points = new ArrayList<>();
                 int radiusOKCount = 0;
@@ -130,13 +135,16 @@ public class MainActivity extends AppCompatActivity {
                             OverlayOptions ooPolyline = new PolylineOptions().width(10).color(0xAAFF0000).points(points);
                             mBaiduMap.addOverlay(ooPolyline);
                         }
+                        //80
                         if(location.getRadius() > 80){
                             radiusOKCount ++;
                         }else{
                             radiusOKCount = 0;
                         }
+                        //60
+                        System.out.println("radiusOKCount:"+radiusOKCount);
                         if(radiusOKCount > 60){
-                            LocationService.restart();
+                            RestartAPP.restartAPP(getContext());
                             radiusOKCount = 0;
                         }
                     }catch (Exception e){

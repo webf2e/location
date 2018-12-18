@@ -91,6 +91,7 @@
             android:process=":pushservice">
         </service>
         <service android:name="pro.lovexj.location.service.IntentService"/>
+        <service android:process=":restart" android:name="pro.lovexj.location.service.KillSelfService"/>
     </application>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <!-- 这个权限用于访问GPS定位-->
