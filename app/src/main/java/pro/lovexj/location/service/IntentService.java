@@ -14,7 +14,11 @@ import com.igexin.sdk.message.GTNotificationMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
 import com.igexin.sdk.message.SetTagCmdMessage;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import pro.lovexj.location.MainActivity;
+import pro.lovexj.location.util.HttpUtils;
 import pro.lovexj.location.util.Constant;
 
 /**
@@ -25,6 +29,8 @@ import pro.lovexj.location.util.Constant;
  * onReceiveCommandResult 各种事件处理回执 <br>
  */
 public class IntentService extends GTIntentService {
+
+    private String url = "http://lovexj.pro/updateCid";
 
     public IntentService() {
 
@@ -65,6 +71,9 @@ public class IntentService extends GTIntentService {
     public void onReceiveClientId(Context context, String clientid) {
         Log.e(TAG, "onReceiveClientId -> " + "clientid = " + clientid);
         Constant.cid = clientid;
+        Map<String, String> params = new HashMap<>();
+        params.put("cid", clientid);
+        HttpUtils.post(url,params,"utf-8");
     }
 
     @Override
