@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                             mBaiduMap.addOverlay(ooPolyline);
                         }
                         //80
-                        if(location.getRadius() > 80){
+                        if(location.getRadius() > 100){
                             radiusOKCount ++;
                         }else{
                             radiusOKCount = 0;
