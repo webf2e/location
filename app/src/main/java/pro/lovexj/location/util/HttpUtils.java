@@ -17,7 +17,10 @@ public class HttpUtils {
 
     public static String post(String strUrlPath, Map<String, String> params, String encode) {
 
-        byte[] data = getRequestData(params, encode).toString().getBytes();//获得请求体
+        byte[] data = null;
+        if(null != params && params.size() > 0){
+            data = getRequestData(params, encode).toString().getBytes();//获得请求体
+        }
         try {
             URL url = new URL(strUrlPath);
 
@@ -30,10 +33,14 @@ public class HttpUtils {
             //设置请求体的类型是文本类型
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             //设置请求体的长度
-            httpURLConnection.setRequestProperty("Content-Length", String.valueOf(data.length));
             //获得输出流，向服务器写入数据
-            OutputStream outputStream = httpURLConnection.getOutputStream();
-            outputStream.write(data);
+            if(null != data){
+                httpURLConnection.setRequestProperty("Content-Length", String.valueOf(data.length));
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(data);
+            }else{
+                httpURLConnection.setRequestProperty("Content-Length", "0");
+            }
             //获得服务器的响应码
             int response = httpURLConnection.getResponseCode();
             if(response == HttpURLConnection.HTTP_OK) {

@@ -13,6 +13,9 @@ public class RestartAPP {
      * @param Delayed 延迟多少毫秒
      */
     public static void restartAPP(Context context, long Delayed){
+        /**
+         * 发送邮件通知
+         */
 
         /**开启一个新的服务，用来重启本APP*/
         Intent intent1=new Intent(context, KillSelfService.class);

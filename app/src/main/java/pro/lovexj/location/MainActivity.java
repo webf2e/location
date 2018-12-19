@@ -21,6 +21,7 @@ import com.baidu.mapapi.model.LatLng;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import pro.lovexj.location.bean.Location;
@@ -29,6 +30,7 @@ import pro.lovexj.location.service.PushService;
 import pro.lovexj.location.service.LocationService;
 import pro.lovexj.location.thread.LocationServerThread;
 import pro.lovexj.location.util.Constant;
+import pro.lovexj.location.util.HttpUtils;
 import pro.lovexj.location.util.OsUtils;
 import pro.lovexj.location.util.RestartAPP;
 
@@ -52,10 +54,11 @@ public class MainActivity extends AppCompatActivity {
     private String addr;
     private String serverData;
 
+    private String url = "http://lovexj.pro/appStart";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Constant.appStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis());
         String processName = OsUtils.getProcessName(this, android.os.Process.myPid());
         System.out.println("processName:"+processName);
         if(null == processName || !processName.endsWith("pro.lovexj.location")) {
@@ -63,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         System.out.println("进入onCreate方法");
+        //获取启动时间
+        Constant.appStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis());
+        //将启动发送到服务器
+        HttpUtils.post(url,null,"utf-8");
         context=getApplicationContext();
         SDKInitializer.initialize(context);
         setContentView(R.layout.activity_main);
@@ -135,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                             OverlayOptions ooPolyline = new PolylineOptions().width(10).color(0xAAFF0000).points(points);
                             mBaiduMap.addOverlay(ooPolyline);
                         }
-                        //80
+                        //100
                         if(location.getRadius() > 100){
                             radiusOKCount ++;
                         }else{
