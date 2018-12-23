@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         //获取启动时间
         Constant.appStartTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis());
         //将启动发送到服务器
-        HttpUtils.post(url,null,"utf-8");
         context=getApplicationContext();
         SDKInitializer.initialize(context);
         setContentView(R.layout.activity_main);
@@ -149,8 +148,7 @@ public class MainActivity extends AppCompatActivity {
                             radiusOKCount = 0;
                         }
                         //60
-                        System.out.println("radiusOKCount:"+radiusOKCount);
-                        if(radiusOKCount > 60){
+                        if(radiusOKCount > 90){
                             RestartAPP.restartAPP(getContext());
                             radiusOKCount = 0;
                         }
@@ -182,6 +180,12 @@ public class MainActivity extends AppCompatActivity {
             //发送服务器的线程
             new Thread(new LocationServerThread()).start();
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpUtils.post(url,null,"utf-8");
+            }
+        }).start();
     }
 
     public static Context getContext() {
