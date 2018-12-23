@@ -1,6 +1,8 @@
 package pro.lovexj.location;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import pro.lovexj.location.bean.Location;
+import pro.lovexj.location.receiver.BatteryReceiver;
 import pro.lovexj.location.service.IntentService;
 import pro.lovexj.location.service.PushService;
 import pro.lovexj.location.service.LocationService;
@@ -46,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView serverDataText;
     private TextView cidText;
     private TextView appStartTimeText;
+    private TextView batteryText;
+    private TextView isRestartText;
     private Handler handler;
 
     private String code;
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private String serverData;
 
     private String url = "http://lovexj.pro/appStart";
+    private BatteryReceiver receiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,16 +168,16 @@ public class MainActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                serverDataText = (TextView)findViewById(R.id.serverData);
-                serverDataText.setBackgroundColor(Color.parseColor("#ffffff"));
-                while (true){
-                    try{
-                        serverData = Constant.serverDataList.take();
-                        handler.post(changeUI);
-                    }catch (Exception e){
-                        e.printStackTrace();
+                    serverDataText = (TextView)findViewById(R.id.serverData);
+                    serverDataText.setBackgroundColor(Color.parseColor("#ffffff"));
+                    while (true){
+                        try{
+                            serverData = Constant.serverDataList.take();
+                            handler.post(changeUI);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
-                }
                 }
             }).start();
         }
@@ -180,12 +186,22 @@ public class MainActivity extends AppCompatActivity {
             //发送服务器的线程
             new Thread(new LocationServerThread()).start();
         }
+
+        //将app启动发送到服务器上
         new Thread(new Runnable() {
             @Override
             public void run() {
                 HttpUtils.post(url,null,"utf-8");
             }
         }).start();
+        //检测手机电量
+        batteryText = (TextView)findViewById(R.id.battery);
+        isRestartText = (TextView)findViewById(R.id.isStartState);
+        batteryText.setBackgroundColor(Color.parseColor("#ffffff"));
+        isRestartText.setBackgroundColor(Color.parseColor("#ffffff"));
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        receiver = new BatteryReceiver(batteryText, isRestartText);
+        registerReceiver(receiver, filter);
     }
 
     public static Context getContext() {
@@ -198,6 +214,9 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onDestroy");
         //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
         mMapView.onDestroy();
+        if(null != receiver){
+            unregisterReceiver(receiver);
+        }
     }
     @Override
     protected void onResume() {

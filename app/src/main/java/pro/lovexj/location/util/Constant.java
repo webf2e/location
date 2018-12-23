@@ -17,4 +17,5 @@ public class Constant {
     public static boolean isStartDrawMapThread = false;
     public static String cid = null;
     public static String appStartTime = null;
+    public static boolean isRestartApp = true;
 }
