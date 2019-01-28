@@ -27,6 +27,10 @@ android {
             jniLibs.srcDirs=['libs']
         }
     }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
