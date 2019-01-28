@@ -54,12 +54,26 @@ public class LocationServerThread implements Runnable{
                 Map<String, String> params = new HashMap<>();
                 params.put("locData", com.alibaba.fastjson.JSONObject.toJSONString(location));
                 String result = HttpUtils.post(url,params,"utf-8");
+                operateResult(result);
                 Constant.serverDataList.add(result);
             }catch (Exception e){
                 e.printStackTrace();
             }finally {
 
             }
+        }
+    }
+
+    private void operateResult(String result){
+        try{
+            String[] results = result.split(" ");
+            if(results[2].equals("0")){
+                Constant.isAutoRestartApp = false;
+            }else{
+                Constant.isAutoRestartApp = true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

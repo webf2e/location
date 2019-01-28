@@ -37,10 +37,13 @@ public class BatteryReceiver extends BroadcastReceiver {
         //小于20不再重启app
         if(percent <= 20){
             Constant.isRestartApp = false;
-            isRestartText.setText("不重启");
         }else{
             Constant.isRestartApp = true;
+        }
+        if(Constant.isAutoRestartApp && Constant.isRestartApp){
             isRestartText.setText("会重启");
+        }else{
+            isRestartText.setText("不会重启");
         }
         //小于10，不再短信和推送末次位置是否更新
         if(percent <= 10){

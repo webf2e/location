@@ -14,7 +14,7 @@ public class RestartAPP {
      */
     public static void restartAPP(Context context, long Delayed){
         /**开启一个新的服务，用来重启本APP*/
-        if(Constant.isRestartApp){
+        if(Constant.isAutoRestartApp && Constant.isRestartApp){
             Intent intent1=new Intent(context, KillSelfService.class);
             intent1.putExtra("PackageName",context.getPackageName());
             intent1.putExtra("Delayed",Delayed);
