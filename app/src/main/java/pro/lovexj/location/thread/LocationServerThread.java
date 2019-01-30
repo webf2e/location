@@ -67,7 +67,7 @@ public class LocationServerThread implements Runnable{
     private void operateResult(String result){
         try{
             String[] results = result.split(" ");
-            if(results[2].equals("0")){
+            if(results[3].equals("0")){
                 Constant.isAutoRestartApp = false;
             }else{
                 Constant.isAutoRestartApp = true;
