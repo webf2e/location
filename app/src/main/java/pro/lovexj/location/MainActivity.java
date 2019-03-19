@@ -128,14 +128,14 @@ public class MainActivity extends AppCompatActivity {
                         //清除地图上的点
                         mBaiduMap.clear();
                         //绘制点
-                        LatLng point = new LatLng(location.getLat(),location.getLon());
+                        LatLng point = new LatLng(location.getB(),location.getL());
                         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_mark1);
                         OverlayOptions opt = new MarkerOptions().position(point).icon(bitmap);
                         mBaiduMap.addOverlay(opt);
-                        code = "定位状态码：" + location.getErrorCode();
-                        time = "定位时间：" + location.getTime()+"；时间戳：" + location.getTimestramp();
-                        lonlat = "经度：" + location.getLon()+"；纬度：" + location.getLat() + "；半径：" + location.getRadius();
-                        addr = "地址：" + location.getAddr() + "（" + location.getLocationDescribe() + "）";
+                        code = "定位状态码：" + location.getE();
+                        time = "定位时间：" + location.getT();
+                        lonlat = "经度：" + location.getL()+"；纬度：" + location.getB() + "；半径：" + location.getR();
+                        addr = "地址：" + location.getA() + "（" + location.getLd() + "）";
                         handler.post(changeUI);
                         //绘制线
                         //添加到线中
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                             mBaiduMap.addOverlay(ooPolyline);
                         }
                         //100
-                        if(location.getRadius() > 100){
+                        if(location.getR() > 100){
                             radiusOKCount ++;
                         }else{
                             radiusOKCount = 0;

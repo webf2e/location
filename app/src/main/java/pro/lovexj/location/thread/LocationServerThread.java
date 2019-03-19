@@ -26,14 +26,14 @@ public class LocationServerThread implements Runnable{
         double currentCheckLon = 0;
         double currentCheckLat = 0;
         long interval = 5000;
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         while (true){
             Constant.isStartSendToServerThread = true;
             try {
                 Location location = Constant.serverLonLatList.take();
                 //判断发送的时间间隔
-                currentCheckLon = location.getLon();
-                currentCheckLat = location.getLat();
+                currentCheckLon = location.getL();
+                currentCheckLat = location.getB();
                 if(currentCheckLon != lastCheckLon || currentCheckLat != lastCheckLat){
                     interval = 5000;
                 }else{
@@ -42,12 +42,13 @@ public class LocationServerThread implements Runnable{
                 lastCheckLon = currentCheckLon;
                 lastCheckLat = currentCheckLat;
                 //判断是否在时间间隔内
-                if(location.getTimestramp() - lastUploadTime < interval){
+                long timestramp = dateFormat.parse(location.getT()).getTime();
+                if(timestramp - lastUploadTime < interval){
                     continue;
                 }
-                lastUploadTime = location.getTimestramp();
-                if(Math.abs(location.getLon() - 4.9E-324) < 0.0001 ||
-                        Math.abs(location.getLat() - 4.9E-324) < 0.0001){
+                lastUploadTime = timestramp;
+                if(Math.abs(location.getL() - 4.9E-324) < 0.0001 ||
+                        Math.abs(location.getB() - 4.9E-324) < 0.0001){
                     System.out.println("不合法经纬度坐标");
                     continue;
                 }

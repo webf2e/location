@@ -5,131 +5,94 @@ package pro.lovexj.location.bean;
  */
 
 public class Location {
-    private String time;
-    private long timestramp;
-    private double lon;
-    private double lat;
-    private float radius;
-    private String addr;
-    private String country;
-    private String province;
-    private String city;
-    private String district;
-    private String street;
-    private int errorCode;
-    private String locationDescribe;
-    private double height;
+    //time
+    private String t;
+    //lon
+    private double l;
+    //lat
+    private double b;
+    //radius
+    private float r;
+    //addr
+    private String a;
+    //street
+    private String s;
+    //errorCode
+    private int e;
+    //locationDescribe
+    private String ld;
+    //height
+    private double h;
 
-
-    public String getTime() {
-        return time;
+    public String getT() {
+        return t;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setT(String t) {
+        this.t = t;
     }
 
-    public long getTimestramp() {
-        return timestramp;
+    public double getL() {
+        return l;
     }
 
-    public void setTimestramp(long timestramp) {
-        this.timestramp = timestramp;
+    public void setL(double l) {
+        this.l = l;
     }
 
-    public double getLon() {
-        return lon;
+    public double getB() {
+        return b;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setB(double b) {
+        this.b = b;
     }
 
-    public double getLat() {
-        return lat;
+    public float getR() {
+        return r;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setR(float r) {
+        this.r = r;
     }
 
-    public float getRadius() {
-        return radius;
+    public String getA() {
+        return a;
     }
 
-    public void setRadius(float radius) {
-        this.radius = radius;
+    public void setA(String a) {
+        this.a = a;
     }
 
-    public String getAddr() {
-        return addr;
+    public String getS() {
+        return s;
     }
 
-    public void setAddr(String addr) {
-        this.addr = addr;
+    public void setS(String s) {
+        this.s = s;
     }
 
-    public String getCountry() {
-        return country;
+    public int getE() {
+        return e;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setE(int e) {
+        this.e = e;
     }
 
-    public String getProvince() {
-        return province;
+    public String getLd() {
+        return ld;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
+    public void setLd(String ld) {
+        this.ld = ld;
     }
 
-    public String getCity() {
-        return city;
+    public double getH() {
+        return h;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getLocationDescribe() {
-        return locationDescribe;
-    }
-
-    public void setLocationDescribe(String locationDescribe) {
-        this.locationDescribe = locationDescribe;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
+    public void setH(double h) {
+        this.h = h;
     }
 }
