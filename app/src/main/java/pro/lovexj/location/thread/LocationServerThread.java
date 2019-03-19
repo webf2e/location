@@ -42,7 +42,7 @@ public class LocationServerThread implements Runnable{
                 lastCheckLon = currentCheckLon;
                 lastCheckLat = currentCheckLat;
                 //判断是否在时间间隔内
-                long timestramp = dateFormat.parse(location.getT()).getTime();
+                long timestramp = System.currentTimeMillis();
                 if(timestramp - lastUploadTime < interval){
                     continue;
                 }

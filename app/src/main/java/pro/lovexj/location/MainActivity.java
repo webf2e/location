@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
                 List<LatLng> points = new ArrayList<>();
                 int radiusOKCount = 0;
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 while (true){
                     try{
                         Constant.isStartDrawMapThread = true;
@@ -133,9 +134,9 @@ public class MainActivity extends AppCompatActivity {
                         OverlayOptions opt = new MarkerOptions().position(point).icon(bitmap);
                         mBaiduMap.addOverlay(opt);
                         code = "定位状态码：" + location.getE();
-                        time = "定位时间：" + location.getT();
+                        time = "定位时间：" + dateFormat.format(System.currentTimeMillis());
                         lonlat = "经度：" + location.getL()+"；纬度：" + location.getB() + "；半径：" + location.getR();
-                        addr = "地址：" + location.getA() + "（" + location.getLd() + "）";
+                        addr = "地址：" + location.getLd();
                         handler.post(changeUI);
                         //绘制线
                         //添加到线中

@@ -26,13 +26,11 @@ public class LocationListener extends BDAbstractLocationListener {
         double height = location.getAltitude();
         String locationDescribe = location.getLocationDescribe();    //获取位置描述信息
         Location l = new Location();
-        l.setA(addr);
         l.setE(errorCode);
         l.setB(latitude);
         l.setLd(locationDescribe);
         l.setL(longitude);
         l.setR(radius);
-        l.setT(time);
         l.setH(height);
         if(Constant.isStartDrawMapThread){
             Constant.mapLonLatList.add(l);

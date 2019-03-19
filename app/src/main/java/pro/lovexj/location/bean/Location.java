@@ -5,30 +5,18 @@ package pro.lovexj.location.bean;
  */
 
 public class Location {
-    //time
-    private String t;
     //lon
     private double l;
     //lat
     private double b;
     //radius
     private float r;
-    //addr
-    private String a;
     //errorCode
     private int e;
     //locationDescribe
     private String ld;
     //height
     private double h;
-
-    public String getT() {
-        return t;
-    }
-
-    public void setT(String t) {
-        this.t = t;
-    }
 
     public double getL() {
         return l;
@@ -52,14 +40,6 @@ public class Location {
 
     public void setR(float r) {
         this.r = r;
-    }
-
-    public String getA() {
-        return a;
-    }
-
-    public void setA(String a) {
-        this.a = a;
     }
 
     public int getE() {
