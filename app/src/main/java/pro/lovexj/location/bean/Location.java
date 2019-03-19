@@ -15,8 +15,6 @@ public class Location {
     private float r;
     //addr
     private String a;
-    //street
-    private String s;
     //errorCode
     private int e;
     //locationDescribe
@@ -62,14 +60,6 @@ public class Location {
 
     public void setA(String a) {
         this.a = a;
-    }
-
-    public String getS() {
-        return s;
-    }
-
-    public void setS(String s) {
-        this.s = s;
     }
 
     public int getE() {

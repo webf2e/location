@@ -22,7 +22,6 @@ public class LocationListener extends BDAbstractLocationListener {
         double longitude = location.getLongitude();    //获取经度信息
         float radius = location.getRadius();    //获取定位精度，默认值为0.0f
         String addr = location.getAddrStr();    //获取详细地址信息
-        String street = location.getStreet();    //获取街道信息
         int errorCode = location.getLocType();
         double height = location.getAltitude();
         String locationDescribe = location.getLocationDescribe();    //获取位置描述信息
@@ -33,7 +32,6 @@ public class LocationListener extends BDAbstractLocationListener {
         l.setLd(locationDescribe);
         l.setL(longitude);
         l.setR(radius);
-        l.setS(street);
         l.setT(time);
         l.setH(height);
         if(Constant.isStartDrawMapThread){
