@@ -17,18 +17,15 @@ public class LocationListener extends BDAbstractLocationListener {
         //此处的BDLocation为定位结果信息类，通过它的各种get方法可获取定位相关的全部结果
         //以下只列举部分获取经纬度相关（常用）的结果信息
         //更多结果信息获取说明，请参照类参考中BDLocation类中的说明
-        String time = dateFormat.format(System.currentTimeMillis());
         double latitude = location.getLatitude();    //获取纬度信息
         double longitude = location.getLongitude();    //获取经度信息
         float radius = location.getRadius();    //获取定位精度，默认值为0.0f
-        String addr = location.getAddrStr();    //获取详细地址信息
         int errorCode = location.getLocType();
         double height = location.getAltitude();
         String locationDescribe = location.getLocationDescribe();    //获取位置描述信息
         Location l = new Location();
         l.setE(errorCode);
         l.setB(latitude);
-        l.setLd(locationDescribe);
         l.setL(longitude);
         l.setR(radius);
         l.setH(height);

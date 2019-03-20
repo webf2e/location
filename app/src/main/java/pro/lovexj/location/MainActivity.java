@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                         code = "定位状态码：" + location.getE();
                         time = "定位时间：" + dateFormat.format(System.currentTimeMillis());
                         lonlat = "经度：" + location.getL()+"；纬度：" + location.getB() + "；半径：" + location.getR();
-                        addr = "地址：" + location.getLd();
+                        addr = "地址：当前版本不可知";
                         handler.post(changeUI);
                         //绘制线
                         //添加到线中

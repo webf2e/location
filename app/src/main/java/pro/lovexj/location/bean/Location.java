@@ -13,8 +13,6 @@ public class Location {
     private float r;
     //errorCode
     private int e;
-    //locationDescribe
-    private String ld;
     //height
     private double h;
 
@@ -48,14 +46,6 @@ public class Location {
 
     public void setE(int e) {
         this.e = e;
-    }
-
-    public String getLd() {
-        return ld;
-    }
-
-    public void setLd(String ld) {
-        this.ld = ld;
     }
 
     public double getH() {
