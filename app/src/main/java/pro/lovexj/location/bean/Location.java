@@ -55,4 +55,9 @@ public class Location {
     public void setH(double h) {
         this.h = h;
     }
+
+    @Override
+    public String toString() {
+        return e+"_"+b+"_"+l+"_"+h+"_"+r;
+    }
 }

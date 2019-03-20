@@ -16,7 +16,7 @@ import pro.lovexj.location.util.HttpUtils;
 
 public class LocationServerThread implements Runnable{
 
-    private String url = "http://lovexj.pro/uploatLocationData";
+    private String url = "http://lovexj.pro/uploadLocationData";
 
     @Override
     public void run() {
@@ -53,7 +53,7 @@ public class LocationServerThread implements Runnable{
                     continue;
                 }
                 Map<String, String> params = new HashMap<>();
-                params.put("locData", com.alibaba.fastjson.JSONObject.toJSONString(location));
+                params.put("locData", location.toString());
                 String result = HttpUtils.post(url,params,"utf-8");
                 operateResult(result);
                 Constant.serverDataList.add(result);
