@@ -37,7 +37,7 @@ public class LocationServerThread implements Runnable{
                 if(currentCheckLon != lastCheckLon || currentCheckLat != lastCheckLat){
                     interval = 5000;
                 }else{
-                    interval = 30000;
+                    interval = 20000;
                 }
                 lastCheckLon = currentCheckLon;
                 lastCheckLat = currentCheckLat;
